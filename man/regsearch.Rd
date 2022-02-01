@@ -76,100 +76,27 @@ Gus Lipkin <gus.lipkin@gmail.com>
   This is a wrapper for \code{\link[stats:glm]{glm}}.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
 ## The function is currently defined as
 function (fDT, dependent, independent, minvar, maxvar, family,
     interactions = FALSE, multi = FALSE)
-{
-    if (multi) {
-        clust <- makeCluster(detectCores())
-    }
-    print("Gathering variables...")
-    if (interactions) {
-        independent <- sort(independent)
-        independent <- c(pbapply(cl = clust, do.call(rbind, combn(independent,
-            2, simplify = FALSE)), 1, function(x) {
-            paste(x, collapse = "*")
-        }), independent)
-        combs <- rbindlist(pbsapply(cl = clust, minvar:maxvar,
-            function(x) {
-                data.table(do.call(rbind, combn(independent,
-                  x, simplify = FALSE)))
-            }), fill = TRUE)
-    }
-    else {
-        independent <- sort(independent)
-        combs <- rbindlist(pbsapply(minvar:maxvar, function(x) {
-            data.table(do.call(rbind, combn(independent, x, simplify = FALSE)))
-        }), fill = TRUE)
-    }
-    reg <- data.table(matrix(data = "", nrow = 1, ncol = length(independent) +
-        4))
-    colnames(reg) <- c("aic", "rSquare", "warn", "X.Intercept.",
-        gsub("\\*", ".", independent))
-    print("Creating regressions...")
-    if (multi) {
-        clusterExport(clust, c("combs"), envir = environment())
-        forms <- pbapply(cl = clust, combs, 1, function(x) {
-            comb <- as.character(x)
-            as.formula(gsub(" \\+$", "", paste(paste(dependent,
-                "~"), paste(comb[!is.na(comb)], "+", collapse = " "),
-                collapse = " ")))
-        })
-    }
-    else {
-        forms <- pbapply(combs, 1, function(x) {
-            comb <- as.character(x)
-            as.formula(gsub(" \\+$", "", paste(paste(dependent,
-                "~"), paste(comb[!is.na(comb)], "+", collapse = " "),
-                collapse = " ")))
-        })
-    }
-    forms <- as.character(unlist(forms, recursive = TRUE))
-    summFunc <- function(x) {
-        summ <- summary(glm(formula = as.formula(x), data = fDT,
-            family = family))
-        coefs <- t(summ$coefficients[, 4])
-        names(coefs) <- gsub(":", ".", names(coefs))
-        summ <- data.frame(aic = summ$aic, rSquare = round(1 -
-            (summ$deviance/summ$null.deviance), 5), warn = FALSE,
-            coefs)
-        data.frame(rbindlist(list(reg, summ), fill = TRUE))
-    }
-    print("Running regressions...")
-    if (multi) {
-        clusterEvalQ(clust, library(data.table))
-        clusterExport(clust, c("forms", "family", "fDT"), envir = environment())
-        regs <- pbsapply(cl = clust, forms, summFunc)
-    }
-    else {
-        regs <- pbsapply(forms, summFunc)
-    }
-    print("Cleaning the output...")
-    regs <- data.table(t(regs))
-    if (multi) {
-        regs <- data.frame(forms, pblapply(cl = clust, regs,
-            function(x) {
-                as.numeric(gsub("[c\\(\", \\)]", "", x))
-            }))
-    }
-    else {
-        regs <- data.frame(forms, pblapply(regs, function(x) {
-            as.numeric(gsub("[c\\(\", \\)]", "", x))
-        }))
-    }
-    regs <- data.table(regs)
-    regs$rank <- regs$rSquare/rowMeans(regs[, !c("forms", "aic",
-        "rSquare", "warn", "X.Intercept.")], na.rm = TRUE)
-    if (multi) {
-        stopCluster(clust)
-    }
-    return(regs[order(desc(rank))])
-  }
+# Creating dummy data
+dt <- data.frame("dependent" = sample(c(0, 1), 100, replace = TRUE),
+                 "ind_1" = runif(100, 0, 1),
+                 "ind_2" = runif(100, 0, 1),
+                 "ind_3" = runif(100, 0, 1),
+                 "ind_4" = runif(100, 0, 1))
+
+# Without interaction terms and multithreading
+regsearch(dt, dependent, c("ind_1", "ind_2", "ind_3", "ind_4"),
+          1, 4, "binomial")
+regsearch(dt, dependent, c("ind_1", "ind_2", "ind_3", "ind_4"),
+          1, 4, "binomial", FALSE, FALSE)
+
+# With interaction terms and multithreading
+regsearch(dt, dependent, c("ind_1", "ind_2", "ind_3", "ind_4"),
+          1, 4, "binomial", TRUE, TRUE)
 }
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
 \keyword{ iteration }
