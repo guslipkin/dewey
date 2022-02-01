@@ -19,6 +19,7 @@ regsearch <-
   # Get every combination of the independent variables
   print("Gathering variables...")
   if(interactions) {
+    varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
     independent <- c(pbapply(cl = clust, do.call(rbind,
                                                  combn(independent, 2, simplify = FALSE)),
@@ -35,6 +36,7 @@ regsearch <-
                                 }),
                        fill = TRUE)
   } else {
+    varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
 
     combs <- rbindlist(pbsapply(minvar:maxvar,
@@ -48,9 +50,10 @@ regsearch <-
   }
 
   # add column for Intercept and AIC
-  reg <- data.table(matrix(data = "", nrow = 1, ncol = length(independent) + 4))
+  reg <- data.frame(matrix(data = NA, nrow = 0, ncol = length(varNames) + 4))
   colnames(reg) <- c("aic", "rSquare", "warn", "X.Intercept.",
-                     gsub("\\*", ".", independent))
+                     gsub("\\*", ".", varNames))
+  reg <- reg[-1,]
 
   print("Creating regressions...")
   if (multi) {
@@ -96,7 +99,7 @@ regsearch <-
                        "rSquare" = round(1 - (summ$deviance / summ$null.deviance), 5),
                        "warn" = FALSE,
                        coefs)
-    data.frame(rbindlist(list(reg, summ), fill = TRUE))
+    rbindlist(list(reg, summ), fill = TRUE)
   }
 
   print("Running regressions...")
@@ -107,17 +110,21 @@ regsearch <-
   } else {
     regs <- pbsapply(forms, summFunc)
   }
+  return(regs)
 
   print("Cleaning the output...")
   regs <- data.table(t(regs))
+  # regs <- data.table(sapply(regs, unlist))
   if(multi) {
-    regs <- data.frame("formula" = forms, pblapply(cl = clust, regs, function(x) {
-      as.numeric(gsub("[c\\(\", \\)]", "", x))
-    }))
+    # regs <- data.frame("formula" = forms, pblapply(cl = clust, regs, function(x) {
+    #   as.numeric(gsub("[c\\(\", \\)]", "", x))
+    # }))
+    regs <- data.frame("formula" = forms, data.table(pbsapply(cl = clust, regs, unlist)))
   } else {
-    regs <- data.frame("formula" = forms, pblapply(regs, function(x) {
-      as.numeric(gsub("[c\\(\", \\)]", "", x))
-    }))
+    # regs <- data.frame("formula" = forms, pblapply(regs, function(x) {
+    #   as.numeric(gsub("[c\\(\", \\)]", "", x))
+    # }))
+    regs <- data.frame("formula" = forms, data.table(pbsapply(regs, unlist)))
   }
   regs <- data.table(regs)
   regs$rank <-
