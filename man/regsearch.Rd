@@ -14,6 +14,7 @@ regsearch(fDT,
          minvar = 1,
          maxvar,
          family,
+         topN = 0,
          interactions = FALSE,
          multi = FALSE)
 }
@@ -39,11 +40,14 @@ If interaction terms are used, they count as one independent variable.
   \item{family}{
 The type of regression. Passed to `glm`. See \code{\link[stats:glm]{glm}} for more information.
 }
+  \item{topN}{
+(Optional) The number of top results to be printed upon run completion. Defaults to 0.
+}
   \item{interactions}{
-A boolean indicating whether or not interaction terms should be used. Defaults to `FALSE`.
+(Optional) A boolean indicating whether or not interaction terms should be used. Defaults to `FALSE`.
 }
   \item{multi}{
-A boolean indicating whether or not multithreading should be used. Defaults to `FALSE`.
+(Optional) A boolean indicating whether or not multithreading should be used. Defaults to `FALSE`.
 It is highly recommended to use multithreading.
 }
 }
@@ -77,7 +81,7 @@ Gus Lipkin <gus.lipkin@gmail.com>
 }
 \examples{
 ## The function is currently defined as
-function (fDT, dependent, independent, minvar, maxvar, family,
+function (fDT, dependent, independent, minvar, maxvar, family, topN = 0,
     interactions = FALSE, multi = FALSE)
 # Creating dummy data
 dt <- data.frame("dependent" = sample(c(0, 1), 100, replace = TRUE),
@@ -87,8 +91,10 @@ dt <- data.frame("dependent" = sample(c(0, 1), 100, replace = TRUE),
                  "ind_4" = runif(100, 0, 1))
 
 # Without interaction terms and multithreading
+## Two top results
 regsearch(dt, dependent, c("ind_1", "ind_2", "ind_3", "ind_4"),
-          1, 4, "binomial")
+          1, 4, "binomial", 2)
+## No top results
 regsearch(dt, dependent, c("ind_1", "ind_2", "ind_3", "ind_4"),
           1, 4, "binomial", FALSE, FALSE)
 

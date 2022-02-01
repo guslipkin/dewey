@@ -5,6 +5,7 @@ regsearch <-
            minvar = 1,
            maxvar,
            family,
+           topN = 0,
            interactions = FALSE,
            multi = FALSE) {
 
@@ -121,7 +122,19 @@ regsearch <-
   regs <- data.table(regs)
   regs$rank <-
     regs$rSquare / rowMeans(regs[,!c("formula", "aic", "rSquare", "warn", "X.Intercept.")], na.rm = TRUE)
+  regs <- regs[order(desc(rank)), !c("rank")]
 
   if(multi) { stopCluster(clust) }
-  return(regs[order(desc(rank)), !c("rank")])
+
+  if (topN > 0) {
+    sapply(regs[1:topN, formula], function(x) {
+      print(summary(glm(
+        formula = as.formula(x),
+        data = fDT,
+        family = family
+      )))
+    })
+  }
+
+  return(regs)
 }
