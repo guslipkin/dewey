@@ -17,8 +17,8 @@ regsearch <-
 
   if(multi) { clust <- makeCluster(detectCores()) }
   # Get every combination of the independent variables
+  varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
   if(interactions) {
-    varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
     print("Gathering variables...")
     independent <- c(pbapply(cl = clust, do.call(rbind,
@@ -28,26 +28,18 @@ regsearch <-
                      independent)
 
     print("Assembling regresions...")
-    combs <- rbindlist(pbsapply(cl = clust, minvar:maxvar,
+    combs <- rbindlist(pblapply(cl = clust,
+                                minvar:maxvar,
                                 function(x) {
-                                  data.table(do.call(rbind,
-                                                     combn(independent,
-                                                           x,
-                                                           simplify = FALSE)))
-                                }),
+                                  data.table(t(combn(independent, x))) }),
                        fill = TRUE)
   } else {
-    varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
 
     print("Assembling regresions...")
-    combs <- rbindlist(pbsapply(minvar:maxvar,
+    combs <- rbindlist(pblapply(minvar:maxvar,
                                 function(x) {
-                                  data.table(do.call(rbind,
-                                                     combn(independent,
-                                                           x,
-                                                           simplify = FALSE)))
-                                }),
+                                  data.table(t(combn(independent, x))) }),
                        fill = TRUE)
   }
 
