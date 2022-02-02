@@ -17,16 +17,17 @@ regsearch <-
 
   if(multi) { clust <- makeCluster(detectCores()) }
   # Get every combination of the independent variables
-  print("Gathering variables...")
   if(interactions) {
     varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
+    print("Gathering variables...")
     independent <- c(pbapply(cl = clust, do.call(rbind,
                                                  combn(independent, 2, simplify = FALSE)),
                              1,
                              function(x) { paste(x, collapse = "*")}),
                      independent)
 
+    print("Assembling regresions...")
     combs <- rbindlist(pbsapply(cl = clust, minvar:maxvar,
                                 function(x) {
                                   data.table(do.call(rbind,
@@ -39,6 +40,7 @@ regsearch <-
     varNames <- ifelse(sapply(fDT, is.factor), paste0(names(fDT), "_"), names(fDT))
     independent <- sort(independent)
 
+    print("Assembling regresions...")
     combs <- rbindlist(pbsapply(minvar:maxvar,
                                 function(x) {
                                   data.table(do.call(rbind,
@@ -60,36 +62,21 @@ regsearch <-
     clusterExport(clust, c("combs"), envir = environment())
     forms <- pbapply(cl = clust, combs, 1, function(x) {
       comb <- as.character(x)
-      as.formula(gsub(" \\+$", "",
-                      paste(
-                        paste(dependent, "~"),
-                        paste(comb[!is.na(comb)], "+", collapse = " "),
-                        collapse = " "
-                      )))
-
+      comb <- paste(paste(dependent, "~"),
+                    paste(comb[!is.na(comb)], "+", collapse = " "),
+                    collapse = " ")
+      substr(comb, 1, nchar(comb) - 2)
     })
   } else {
     forms <- pbapply(combs, 1, function(x) {
       comb <- as.character(x)
-      as.formula(gsub(" \\+$", "",
-                      paste(
-                        paste(dependent, "~"),
-                        paste(comb[!is.na(comb)], "+", collapse = " "),
-                        collapse = " "
-                      )))
+      comb <- paste(paste(dependent, "~"),
+                    paste(comb[!is.na(comb)], "+", collapse = " "),
+                    collapse = " ")
+      substr(comb, 1, nchar(comb) - 2)
     })
   }
   forms <- as.character(unlist(forms, recursive = TRUE))
-  # return(forms)
-  # if(multi) {
-  #   forms <- forms[!parSapplyLB(clust, forms, function(x) {
-  #     any(duplicated(unlist(strsplit(gsub("[~\\+\\*]", "", x), "  "))))
-  #     })]
-  # } else {
-  #   forms <- forms[!sapply(forms, function(x) {
-  #     any(duplicated(unlist(strsplit(gsub("[~\\+\\*]", "", x), "  "))))
-  #     })]
-  # }
 
   summFunc <- function(x) {
     summ <- summary(glm(formula = as.formula(x), data = fDT, family = family))
@@ -106,30 +93,17 @@ regsearch <-
   if(multi) {
     clusterEvalQ(clust, library(data.table))
     clusterExport(clust, c("forms", "family", "fDT"), envir = environment())
-    regs <- pbsapply(cl = clust, forms, summFunc)
+    regs <- rbindlist(pblapply(cl = clust, forms, summFunc), fill = TRUE)
   } else {
-    regs <- pbsapply(forms, summFunc)
+    regs <- rbindlist(pblapply(forms, summFunc), fill = TRUE)
   }
-  return(regs)
 
-  print("Cleaning the output...")
-  regs <- data.table(t(regs))
-  # regs <- data.table(sapply(regs, unlist))
-  if(multi) {
-    # regs <- data.frame("formula" = forms, pblapply(cl = clust, regs, function(x) {
-    #   as.numeric(gsub("[c\\(\", \\)]", "", x))
-    # }))
-    regs <- data.frame("formula" = forms, data.table(pbsapply(cl = clust, regs, unlist)))
-  } else {
-    # regs <- data.frame("formula" = forms, pblapply(regs, function(x) {
-    #   as.numeric(gsub("[c\\(\", \\)]", "", x))
-    # }))
-    regs <- data.frame("formula" = forms, data.table(pbsapply(regs, unlist)))
-  }
-  regs <- data.table(regs)
-  regs$rank <-
-    regs$rSquare / rowMeans(regs[,!c("formula", "aic", "rSquare", "warn", "X.Intercept.")], na.rm = TRUE)
-  regs <- regs[order(desc(rank)), !c("rank")]
+
+  regs <- data.table("formula" = forms, regs)
+  setnames(regs, "X.Intercept.", "xIntercept")
+  regs$rowMeans <- rowMeans(regs[,!c("formula", "aic", "rSquare", "warn", "xIntercept")], na.rm = TRUE)
+  regs$rank <- regs$rSquare / regs$rowMeans
+  regs <- regs[order(desc(rank)), !c("rank", "rowMeans")]
 
   if(multi) { stopCluster(clust) }
 
