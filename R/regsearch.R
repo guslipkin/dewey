@@ -54,21 +54,20 @@ regsearch <-
     clusterExport(clust, c("combs"), envir = environment())
     forms <- pbapply(cl = clust, combs, 1, function(x) {
       comb <- as.character(x)
-      comb <- paste(paste(dependent, "~"),
-                    paste(comb[!is.na(comb)], "+", collapse = " "),
+      comb <- paste(paste("route", "~"),
+                    paste("+", comb[!is.na(comb)], collapse = " "),
                     collapse = " ")
-      substr(comb, 1, nchar(comb) - 2)
+      comb
     })
   } else {
     forms <- pbapply(combs, 1, function(x) {
       comb <- as.character(x)
-      comb <- paste(paste(dependent, "~"),
-                    paste(comb[!is.na(comb)], "+", collapse = " "),
+      comb <- paste(paste("route", "~"),
+                    paste("+", comb[!is.na(comb)], collapse = " "),
                     collapse = " ")
-      substr(comb, 1, nchar(comb) - 2)
+      comb
     })
   }
-  forms <- as.character(unlist(forms, recursive = TRUE))
 
   summFunc <- function(x) {
     summ <- summary(glm(formula = as.formula(x), data = fDT, family = family))
