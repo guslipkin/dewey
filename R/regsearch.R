@@ -54,7 +54,7 @@ regsearch <-
     clusterExport(clust, c("combs"), envir = environment())
     forms <- pbapply(cl = clust, combs, 1, function(x) {
       comb <- as.character(x)
-      comb <- paste(paste("route", "~"),
+      comb <- paste(paste(dependent, "~"),
                     paste("+", comb[!is.na(comb)], collapse = " "),
                     collapse = " ")
       comb
