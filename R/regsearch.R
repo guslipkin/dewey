@@ -21,11 +21,22 @@ regsearch <-
   if(interactions) {
     independent <- sort(independent)
     print("Gathering variables...")
-    independent <- c(pbapply(cl = clust, do.call(rbind,
-                                                 combn(independent, 2, simplify = FALSE)),
-                             1,
-                             function(x) { paste(x, collapse = "*")}),
-                     independent)
+    if (multi) {
+      independent <- c(pbapply(cl = clust,
+                               do.call(rbind,
+                                       combn(independent, 2, simplify = FALSE)),
+                               1,
+                               function(x) { paste(x, collapse = "*") }),
+                       independent)
+    } else {
+      print("WARNING: Using interaction terms without multithreading
+            may take a very long time")
+      independent <- c(pbapply(do.call(rbind,
+                                       combn(independent, 2, simplify = FALSE)),
+                               1,
+                               function(x) { paste(x, collapse = "*") }),
+                       independent)
+    }
 
     print("Assembling regresions...")
     combs <- rbindlist(pblapply(cl = clust,
@@ -43,6 +54,29 @@ regsearch <-
                        fill = TRUE)
   }
 
+  if (interactions) {
+    print("Trimming regressions...")
+    if (multi) {
+      combs <- pbapply(cl = clust, combs, 1, function(x) {
+        x <- as.character(x)
+        x <- x[!is.na(x)]
+        expanded <- unlist(strsplit(x[grepl("\\*", x)], "\\*"))
+        notExpanded <- paste0(x[!grepl("\\*", x)], "")
+        if (!(notExpanded %in% expanded))
+          return(x)
+      })
+    } else {
+      combs <- pbapply(combs, 1, function(x) {
+        x <- as.character(x)
+        x <- x[!is.na(x)]
+        expanded <- unlist(strsplit(x[grepl("\\*", x)], "\\*"))
+        notExpanded <- paste0(x[!grepl("\\*", x)], "")
+        if (!(notExpanded %in% expanded))
+          return(x)
+      })
+    }
+  }
+
   # add column for Intercept and AIC
   reg <- data.frame(matrix(data = NA, nrow = 0, ncol = length(varNames) + 4))
   colnames(reg) <- c("aic", "rSquare", "warn", "X.Intercept.",
@@ -52,22 +86,42 @@ regsearch <-
   print("Creating regressions...")
   if (multi) {
     clusterExport(clust, c("combs"), envir = environment())
-    forms <- pbapply(cl = clust, combs, 1, function(x) {
-      comb <- as.character(x)
-      comb <- paste(paste(dependent, "~"),
-                    paste("+", comb[!is.na(comb)], collapse = " "),
-                    collapse = " ")
-      comb
-    })
+    if (interactions) {
+      forms <- pblapply(cl = clust, combs, function(x) {
+        if (is.null(x))
+          return(NULL)
+        paste(paste(dependent, "~"),
+              paste("+", x[!is.na(x)], collapse = " "),
+              collapse = " ")
+      })
+    } else {
+      forms <- pbapply(cl = clust, combs, 1, function(x) {
+        comb <- as.character(x)
+        comb <- paste(paste(dependent, "~"),
+                      paste("+", comb[!is.na(comb)], collapse = " "),
+                      collapse = " ")
+        comb
+      })
+    }
   } else {
-    forms <- pbapply(combs, 1, function(x) {
-      comb <- as.character(x)
-      comb <- paste(paste(dependent, "~"),
-                    paste("+", comb[!is.na(comb)], collapse = " "),
-                    collapse = " ")
-      comb
-    })
+    if(interactions) {
+      forms <- pblapply(combs, function(x) {
+        if (is.null(x))
+          return(NULL)
+        paste(paste(dependent, "~"),
+              paste("+", x[!is.na(x)], collapse = " "), collapse = " ")
+      })
+    } else {
+      forms <- pbapply(combs, 1, function(x) {
+        comb <- as.character(x)
+        comb <- paste(paste(dependent, "~"),
+                      paste("+", comb[!is.na(comb)], collapse = " "),
+                      collapse = " ")
+        comb
+      })
+    }
   }
+  forms <- unlist(forms)
 
   summFunc <- function(x) {
     summ <- summary(glm(formula = as.formula(x), data = fDT, family = family))
