@@ -37,45 +37,49 @@ regsearch <-
                                function(x) { paste(x, collapse = "*") }),
                        independent)
     }
-
-    print("Assembling regresions...")
-    combs <- rbindlist(pblapply(cl = clust,
-                                minvar:maxvar,
-                                function(x) {
-                                  data.table(t(combn(independent, x))) }),
-                       fill = TRUE)
   } else {
     independent <- sort(independent)
-
-    print("Assembling regresions...")
-    combs <- rbindlist(pblapply(minvar:maxvar,
-                                function(x) {
-                                  data.table(t(combn(independent, x))) }),
-                       fill = TRUE)
   }
 
-  if (interactions) {
-    print("Trimming regressions...")
-    if (multi) {
-      combs <- pbapply(cl = clust, combs, 1, function(x) {
-        x <- as.character(x)
-        x <- x[!is.na(x)]
-        expanded <- unlist(strsplit(x[grepl("\\*", x)], "\\*"))
-        notExpanded <- paste0(x[!grepl("\\*", x)], "")
-        if (!(notExpanded %in% expanded))
-          return(x)
-      })
-    } else {
-      combs <- pbapply(combs, 1, function(x) {
-        x <- as.character(x)
-        x <- x[!is.na(x)]
-        expanded <- unlist(strsplit(x[grepl("\\*", x)], "\\*"))
-        notExpanded <- paste0(x[!grepl("\\*", x)], "")
-        if (!(notExpanded %in% expanded))
-          return(x)
-      })
-    }
+  print("Assembling regresions...")
+  if(multi) {
+    combs <- pblapply(cl = clust, minvar:maxvar,
+                      function(x) {
+                        y <- t(combn(independent, x))
+                        if(!interactions)
+                          return(unlist(apply(y, 1, list), recursive = FALSE))
+                        apply(y, 1, function(x) {
+                          x <- x[!is.na(x)]
+                          expanded <-
+                            unlist(strsplit(x[grepl("\\*", x)], "\\*"))
+                          notExpanded <-
+                            paste0(x[!grepl("\\*", x)], "")
+                          if (!(notExpanded %in% expanded))
+                            return(x)
+                          else
+                            return(NULL)
+                        })
+                      })
+  } else {
+    combs <- pblapply(minvar:maxvar,
+                      function(x) {
+                        y <- t(combn(independent, x))
+                        if(!interactions)
+                          return(unlist(apply(y, 1, list), recursive = FALSE))
+                        apply(y, 1, function(x) {
+                          x <- x[!is.na(x)]
+                          expanded <-
+                            unlist(strsplit(x[grepl("\\*", x)], "\\*"))
+                          notExpanded <-
+                            paste0(x[!grepl("\\*", x)], "")
+                          if (!(notExpanded %in% expanded))
+                            return(x)
+                          else
+                            return(NULL)
+                        })
+                      })
   }
+  combs <- unlist(combs, recursive = FALSE)
 
   # add column for Intercept and AIC
   reg <- data.frame(matrix(data = NA, nrow = 0, ncol = length(varNames) + 4))
@@ -86,40 +90,21 @@ regsearch <-
   print("Creating regressions...")
   if (multi) {
     clusterExport(clust, c("combs"), envir = environment())
-    if (interactions) {
-      forms <- pblapply(cl = clust, combs, function(x) {
-        if (is.null(x))
-          return(NULL)
-        paste(paste(dependent, "~"),
-              paste("+", x[!is.na(x)], collapse = " "),
-              collapse = " ")
-      })
-    } else {
-      forms <- pbapply(cl = clust, combs, 1, function(x) {
-        comb <- as.character(x)
-        comb <- paste(paste(dependent, "~"),
-                      paste("+", comb[!is.na(comb)], collapse = " "),
-                      collapse = " ")
-        comb
-      })
-    }
+    forms <- pblapply(cl = clust, combs, function(x) {
+      if (is.null(x))
+        return(NULL)
+      paste(paste(dependent, "~"),
+            paste("+", x[!is.na(x)], collapse = " "),
+            collapse = " ")
+    })
   } else {
-    if(interactions) {
-      forms <- pblapply(combs, function(x) {
-        if (is.null(x))
-          return(NULL)
-        paste(paste(dependent, "~"),
-              paste("+", x[!is.na(x)], collapse = " "), collapse = " ")
-      })
-    } else {
-      forms <- pbapply(combs, 1, function(x) {
-        comb <- as.character(x)
-        comb <- paste(paste(dependent, "~"),
-                      paste("+", comb[!is.na(comb)], collapse = " "),
-                      collapse = " ")
-        comb
-      })
-    }
+    forms <- pblapply(combs, function(x) {
+      if (is.null(x))
+        return(NULL)
+      paste(paste(dependent, "~"),
+            paste("+", x[!is.na(x)], collapse = " "),
+            collapse = " ")
+    })
   }
   forms <- unlist(forms)
 
