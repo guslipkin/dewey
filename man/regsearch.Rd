@@ -8,7 +8,7 @@ Regression Search
 This is an implementation of a global search regression. It leverages the `apply` family of functions for faster processing and uses `glm` for running the regression.
 }
 \usage{
-regsearch(fDT,
+regsearch(data,
          dependent,
          independent,
          minvar = 1,
@@ -20,14 +20,16 @@ regsearch(fDT,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fDT}{
+  \item{data}{
 A `data.frame` that contains a dependent variable and the independent variables
 }
   \item{dependent}{
 The dependent variable for the regression.
 }
   \item{independent}{
-A vector of independent variables to be used. These must match the column names from `fDT`.
+A vector of independent variables to be used. These must match the column names from `data`.
+
+These can also include interaction terms made from column names from `data`. This allows for specific interaction terms to be used, rather than every possible interaction as is done with `interactions = TRUE`.
 }
   \item{minvar}{
 (Optional) The minimum number of independent variables to be used in the regression. Defaults to 1.
