@@ -1,4 +1,12 @@
-ifelsedata <- function(x, y, arg) {
+ifelsedata <- function(x, y, arg = NULL) {
+  # create the expression
+  # if `arg` is missing, evaluate `x` based on contents of `y`
+  #   assuming `y` is a boolean
+  if(missing(arg))
+    expr <- paste("ifelse(l2, l1, NA)", collapse = "")
+  else
+    expr <- paste("ifelse(l1", arg, "l2, l1, NA)", collapse = "")
+
   # get the smaller dimensions
   r <- min(c(nrow(d1), nrow(d2)))
   c <- min(c(ncol(d1), ncol(d2)))
@@ -12,6 +20,5 @@ ifelsedata <- function(x, y, arg) {
   l2 <- sapply(as.list(d2), as.vector)
 
   # evaluate the expression and return the result
-  expr <- paste("ifelse(l1", arg, "l2, l1, NA)", collapse = "")
   data.frame(eval(parse(text=expr)))
 }

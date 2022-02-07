@@ -12,9 +12,12 @@ ifelsedata(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ a `data.frame` of the same dimensions as `y` }
-  \item{y}{ a `data.frame` of the same dimensions as `x` }
-  \item{arg}{ a logical test such as `==` or `>` in string format }
+  \item{x}{ A `data.frame` of the same dimensions as `y`. }
+  \item{y}{ A `data.frame` of the same dimensions as `x`. }
+  \item{arg}{
+  (Optional) A logical test such as `==` or `>` in string format.
+
+  If `arg` is not included, it is assumed that all values of `y` are boolean. }
 }
 \details{
 There is no reason for this function to exist, but I wanted to make it and so I did.
