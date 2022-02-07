@@ -1,3 +1,63 @@
+#' An exhaustive search regression built on base R
+#'
+#' @export
+#'
+#' @param data A `data.frame` that contains a dependent variable and the
+#'   independent variables.
+#' @param dependent The dependent variable for the regression.
+#' @param independent A vector of independent variables to be used. These must
+#'   match the column names from `data`. These can also include interaction
+#'   terms made from column names from `data`. This allows for specific
+#'   interaction terms to be used, rather than every possible interaction as is
+#'   done with `interactions = TRUE`.
+#' @param minvar (Optional) The minimum number of independent variables to be
+#'   used in the regression. Defaults to 1.
+#' @param maxvar The maximum number of independent variables to be used in the
+#'   regression. Must be equal to or less than the number of independent
+#'   variables. If interaction terms are used, they count as one independent
+#'   variable.
+#' @param family The type of regression. Passed to `glm`. See
+#'   \code{\link[stats:glm]{glm}} for more information.
+#' @param topN (Optional) The number of top results to be printed upon run
+#'   completion. Defaults to 0.
+#' @param interactions (Optional) A boolean indicating whether or not
+#'   interaction terms should be used. Defaults to `FALSE`.
+#' @param multi (Optional) A boolean indicating whether or not multithreading
+#'   should be used. Defaults to `FALSE`. It is highly recommended to use
+#'   multithreading.
+#'
+#' @return Returns a `data.table` of information on the regressions run. The
+#'   resulting data.table is sorted in descending order by the rSquare divided
+#'   by the mean p-value. This is generally reliable in pushing quality
+#'   regressions to the top of the list. \item{`formula`}{The regression formula
+#'   used.} \item{`aic`}{The aic for the regression.} \item{`rSquare`}{The
+#'   calculated r-square for the regression.} \item{`warn`}{Currently unused.}
+#'   \item{independent}{Each variable column contains the p-values for that
+#'   variable or interaction term in a given regression.}
+#'
+#' @import data.table pbapply parallel
+#' @importFrom stats as.formula formula glm
+#' @importFrom utils combn
+#'
+#' @examples
+#' # Creating dummy data
+#' dt <- data.frame("dependent" = sample(c(0, 1), 100, replace = TRUE),
+#' "ind_1" = runif(100, 0, 1),
+#' "ind_2" = runif(100, 0, 1),
+#' "ind_3" = runif(100, 0, 1),
+#' "ind_4" = runif(100, 0, 1))
+#'
+#' # Without interaction terms and multithreading
+#' ## Two top results
+#' regsearch(dt, "dependent", c("ind_1", "ind_2", "ind_3", "ind_4"),
+#' 1, 4, "binomial", 2)
+#' ## No top results
+#' regsearch(dt, "dependent", c("ind_1", "ind_2", "ind_3", "ind_4"),
+#' 1, 4, "binomial", FALSE, FALSE)
+#'
+#' # With interaction terms and multithreading
+#' regsearch(dt, "dependent", c("ind_1", "ind_2", "ind_3", "ind_4"),
+#' 1, 4, "binomial", TRUE, TRUE)
 regsearch <- function(data,
                       dependent, independent,
                       minvar = 1, maxvar,
@@ -170,7 +230,7 @@ regsearch <- function(data,
   # ranks the results based on my arbitrary system
   regs$rowMeans <- rowMeans(regs[,!c("formula", "aic", "rSquare", "warn", "xIntercept")], na.rm = TRUE)
   regs$rank <- regs$rSquare / regs$rowMeans
-  regs <- regs[order(desc(rank)), !c("rank", "rowMeans")]
+  regs <- regs[order(rank, decreasing = TRUE), !c("rank", "rowMeans")]
 
   # stops the cluster
   if(multi) { stopCluster(clust) }

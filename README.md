@@ -14,7 +14,7 @@ devtools::install_github("guslipkin/dewey")
 
 ## `regsearch`
 
-An exhaustive search regression built on base R.
+An exhaustive search regression built on base R
 
 ## `ifelsedata`
 

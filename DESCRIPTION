@@ -2,12 +2,16 @@ Package: dewey
 Type: Package
 Title: An R library for a variety of things
 Version: 0.1.0
-Author: Gus Lipkin
-Maintainer: <gus.lipkin@gmail.com>
+License: GPL (>= 3) + file LICENSE
+Authors@R: person("Gus", "Lipkin", email = "gus.lipkin@gmail.com",
+  role = c("aut", "cre"))
 Description: For now it's just an implementation of a global search regression.
 Encoding: UTF-8
 LazyData: true
 Imports: 
     data.table,
     pbapply,
-    parallel
+    parallel,
+    stats,
+    utils
+RoxygenNote: 7.1.2
