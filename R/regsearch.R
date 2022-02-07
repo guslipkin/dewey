@@ -27,6 +27,13 @@ regsearch <- function(data,
          call. = FALSE)
   }
 
+  maxvarTest <- length(independent) + ifelse(interactions, choose(length(independent), 2), 0)
+  if(maxvar > maxvarTest) {
+    warning(paste("`maxvar` is greater than the number of independent variables. Setting maxvar to",
+                  maxvarTest, collapse = ""))
+    maxvar <- maxvarTest
+  }
+
   # create the cluster for multithreading
   if(multi) { clust <- makeCluster(detectCores()) }
 
