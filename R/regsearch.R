@@ -200,14 +200,15 @@ regsearch <- function(data,
   summFunc <- function(x) {
     options(warn = 0)
     summ <- summary(glm(formula = as.formula(x), data = data, family = family))
-    warn <- tryCatch({ names(last.warning) },
-                     warning = function(e) {""},
-                     error = function(e) {""})
+    # warn <- tryCatch({ names(last.warning) },
+    #                  warning = function(e) {""},
+    #                  error = function(e) {""})
     coefs <- t(summ$coefficients[,4])
     names(coefs) <- gsub(":", ".", names(coefs))
     summ <- data.frame("aic" = summ$aic,
                        "rSquare" = round(1 - (summ$deviance / summ$null.deviance), 5),
-                       "warn" = warn,
+                       # "warn" = warn,
+                       "warn" = NA,
                        coefs)
     rbindlist(list(reg, summ), fill = TRUE)
   }
