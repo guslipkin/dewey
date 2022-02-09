@@ -4,15 +4,18 @@
 \alias{ifelsedata}
 \title{Fast data.frame comparisons at the cell level}
 \usage{
-ifelsedata(x, y, arg = NULL)
+ifelsedata(x, y, arg = NULL, matchCols = TRUE)
 }
 \arguments{
 \item{x}{A `data.frame` of the same dimensions as `y`.}
 
 \item{y}{A `data.frame` of the same dimensions as `x`.}
 
-\item{arg}{(Optional) A logical test such as `==` or `>` in string format. If
+\item{arg}{(Optional) A logical test expression including `x` and `y`. If
 `arg` is not included, it is assumed that all values of `y` are logical.}
+
+\item{matchCols}{(Optional) A boolean that determines if columns will be
+matched based on name (Default) or position}
 }
 \value{
 Returns a data.frame of the smallest size by rows and columns. The
@@ -25,11 +28,20 @@ Fast data.frame comparisons at the cell level
 \examples{
 # create dummy data
 x <- data.frame(matrix(data = sample(1:10, 100, TRUE), nrow = 10, ncol = 10))
+y <- data.frame(matrix(data = sample(1:10, 100, TRUE), nrow = 10, ncol = 10))
+
+# test for equality
+ifelsedata(x, y, "x >= y | x == y - 2")
+
+# rename x columns
+colnames(x) <- paste0("X", 5:14)
+# match with column names
+ifelsedata(x, y, "x >= y | x == y - 2", TRUE)
+
+# match based on booleans in y
 y <- data.frame(matrix(data = sample(c(TRUE, FALSE), 100, TRUE),
                        nrow = 10,
                        ncol = 10))
-
-# test for equality
-ifelsedata(x, y, "==")
+# test based on TRUE/FALSE in y
 ifelsedata(x, y)
 }
