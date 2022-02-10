@@ -3,7 +3,8 @@
 #' @export
 #'
 #' @param x A `data.frame` of the same dimensions as `y`.
-#' @param y A `data.frame` of the same dimensions as `x`.
+#' @param y A `data.frame` of the same dimensions as `x` or a vector of length
+#'   one.
 #' @param arg (Optional) A logical test expression including `x` and `y`. If
 #'   `arg` is not included, it is assumed that all values of `y` are logical.
 #' @param matchCols (Optional) A boolean that determines if columns will be
@@ -31,6 +32,9 @@
 #' # test based on TRUE/FALSE in y
 #' ifelsedata(x, y)
 ifelsedata <- function(x, y, arg = NULL, matchCols = TRUE) {
+
+  if(is.numeric(y) & length(y) == 1)
+    y <- data.frame(matrix(data = y, nrow = nrow(x), ncol = ncol(x)))
   # get column names so that `matchCols` can be tested
   colsX <- colnames(x)
   colsY <- colnames(y)

@@ -9,7 +9,8 @@ ifelsedata(x, y, arg = NULL, matchCols = TRUE)
 \arguments{
 \item{x}{A `data.frame` of the same dimensions as `y`.}
 
-\item{y}{A `data.frame` of the same dimensions as `x`.}
+\item{y}{A `data.frame` of the same dimensions as `x` or a vector of length
+one.}
 
 \item{arg}{(Optional) A logical test expression including `x` and `y`. If
 `arg` is not included, it is assumed that all values of `y` are logical.}
