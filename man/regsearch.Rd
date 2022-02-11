@@ -13,7 +13,8 @@ regsearch(
   family,
   topN = 0,
   interactions = FALSE,
-  multi = FALSE
+  multi = FALSE,
+  ...
 )
 }
 \arguments{
@@ -48,6 +49,9 @@ interaction terms should be used. Defaults to `FALSE`.}
 \item{multi}{(Optional) A boolean indicating whether or not multithreading
 should be used. Defaults to `FALSE`. It is highly recommended to use
 multithreading.}
+
+\item{...}{(Optional) Function arguments to be passed to
+\code{\link[stats]{glm}}}
 }
 \value{
 Returns a `data.table` of information on the regressions run. The
