@@ -3,7 +3,7 @@ An R library for a variety of things
 
 
 
-`regsearch` and `ifelsedata` are currently the only functions available and are still in development.
+A small collection of functions that may be helpful for STATA users or regular human beings.
 
 ## Install Process
 
@@ -18,4 +18,8 @@ An exhaustive search regression built on base R
 
 ## `ifelsedata`
 
-Fast data.frame comparisons at the cell level
+Fast `data.frame` comparisons at the cell level
+
+## `diffFill`
+
+A wrapper for the base `diff` function that returns a vector of the same length as the input
