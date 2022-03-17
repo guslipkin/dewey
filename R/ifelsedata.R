@@ -8,7 +8,7 @@
 #' @param arg (Optional) A logical test expression including `x` and `y`. If
 #'   `arg` is not included, it is assumed that all values of `y` are logical.
 #' @param matchCols (Optional) A boolean that determines if columns will be
-#'   matched based on name (Default) or position
+#'   matched based on name or position. Default is `FALSE`
 #' @return Returns a data.frame of the smallest size by rows and columns. The
 #'   cells returned are from `x` if the test passes and `NA` if it does not
 #'   pass.
@@ -31,7 +31,7 @@
 #'                        ncol = 10))
 #' # test based on TRUE/FALSE in y
 #' ifelsedata(x, y)
-ifelsedata <- function(x, y, arg = NULL, matchCols = TRUE) {
+ifelsedata <- function(x, y, arg = NULL, matchCols = FALSE) {
 
   if(is.numeric(y) & length(y) == 1)
     y <- data.frame(matrix(data = y, nrow = nrow(x), ncol = ncol(x)))

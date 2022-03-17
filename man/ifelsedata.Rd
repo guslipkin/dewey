@@ -4,7 +4,7 @@
 \alias{ifelsedata}
 \title{Fast data.frame comparisons at the cell level}
 \usage{
-ifelsedata(x, y, arg = NULL, matchCols = TRUE)
+ifelsedata(x, y, arg = NULL, matchCols = FALSE)
 }
 \arguments{
 \item{x}{A `data.frame` of the same dimensions as `y`.}
@@ -16,7 +16,7 @@ one.}
 `arg` is not included, it is assumed that all values of `y` are logical.}
 
 \item{matchCols}{(Optional) A boolean that determines if columns will be
-matched based on name (Default) or position}
+matched based on name or position. Default is `FALSE`}
 }
 \value{
 Returns a data.frame of the smallest size by rows and columns. The

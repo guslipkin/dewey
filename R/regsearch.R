@@ -38,7 +38,7 @@
 #'   variable or interaction term in a given regression.}
 #'
 #' @import data.table pbapply parallel
-#' @importFrom stats as.formula formula glm
+#' @importFrom stats as.formula formula glm BIC
 #' @importFrom utils combn
 #'
 #' @examples
@@ -149,8 +149,8 @@ regsearch <- function(data,
 
   # create a base data.frame that has all independent variables
   # `*` in interaction terms is converted to a `.`
-  reg <- data.frame(matrix(data = NA, nrow = 0, ncol = length(varNames) + 4))
-  colnames(reg) <- c("aic", "rSquare", "warn", "X.Intercept.",
+  reg <- data.frame(matrix(data = NA, nrow = 0, ncol = length(varNames) + 5))
+  colnames(reg) <- c("aic", "bic", "rSquare", "warn", "X.Intercept.",
                      gsub("\\*", ".", varNames))
 
   # convert the list of independent variables into full regression formulas
@@ -185,7 +185,9 @@ regsearch <- function(data,
   # renames the `X.Intercept.` column to something easier to work with
   setnames(regs, "X.Intercept.", "xIntercept")
   # ranks the results based on my arbitrary system
-  regs$rowMeans <- rowMeans(regs[,!c("formula", "aic", "rSquare", "warn", "xIntercept")], na.rm = TRUE)
+  regs$rowMeans <-
+    rowMeans(regs[,!c("formula", "aic", "bic", "rSquare", "warn", "xIntercept")],
+             na.rm = TRUE)
   regs$rank <- regs$rSquare / regs$rowMeans
   regs <- regs[order(rank, decreasing = TRUE), !c("rank", "rowMeans")]
 
@@ -205,16 +207,18 @@ regsearch <- function(data,
 }
 
 # takes a character vector or formula and runs the requested regression
-# returns a single row data.table representing the results of that regression
+# returns a single row data.frame representing the results of that regression
 summariseReg <- function(x, data, family, reg, ...) {
   options(warn = 0)
-  summ <- summary(glm(formula = as.formula(x), data = data, family = family, ...))
+  lm <- glm(formula = as.formula(x), data = data, family = family, ...)
+  summ <- summary(lm)
   # warn <- tryCatch({ names(last.warning) },
   #                  warning = function(e) {""},
   #                  error = function(e) {""})
   coefs <- t(summ$coefficients[,4])
   names(coefs) <- gsub(":", ".", names(coefs))
   summ <- data.frame("aic" = summ$aic,
+                     "bic" = BIC(lm),
                      "rSquare" = round(1 - (summ$deviance / summ$null.deviance), 5),
                      # "warn" = warn,
                      "warn" = NA,
