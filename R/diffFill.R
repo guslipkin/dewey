@@ -18,16 +18,42 @@
 #' diffFill(x, 1, 2)
 diffFill <- function(x, lag = 1, differences = 1, ...) {
 
-  # return true if the number is not an integer
-  # isNotInteger <- function(x) { (!is.numeric(x) | (x != as.integer(x))) }
   # stop if not all values of lag or differences are integers
-  if (any(sapply(lag, isNotInteger))) {
-    stop("lag must be an integer or integer vector")
+  if (any(sapply(lag, isNotInteger)) | any(lag < 1)) {
+    stop("lag must be an integer or integer vector and >= 1")
   }
-  if (any(sapply(differences, isNotInteger))) {
-    stop("differences must be an integer or integer vector")
+  if (any(sapply(differences, isNotInteger)) | any(differences < 1)) {
+    stop("differences must be an integer or integer vector and >= 1")
   }
 
-  # append the appropriate number of NA values to the diff
-  return(c(rep(NA, lag * differences), diff(x, lag, differences, ...)))
+  # make sure the lag and differences are the same length
+  if(length(lag) != length(differences)) {
+    # warn if lag or differences, but not both are length 1, but warn if the
+    # other is not
+    # stop if the warning criteria are not met
+    if(length(lag) == 1) {
+      warning("'lag' is length 1, mapping 'lag' to all values of 'differences'")
+      lag <- rep(lag, length(differences))
+    } else if(length(differences) == 1) {
+      warning("'differences' is length 1, mapping 'differences' to all values of 'lag'")
+      differences <- rep(differences, length(lag))
+    } else {
+      stop("'lag' and 'differences' must be the same length or length 1")
+    }
+  }
+
+  # append the appropriate number of NA values to the diff and build into a
+  # data.frame
+  df <- data.frame(sapply(1:length(lag), function(y) {
+    c(rep(NA, lag[y] * differences[y]), diff(x, lag[y], differences[y], ...))
+  }))
+
+  # get the variable name and rename the columns with the correct lag and
+  # difference number
+  colnames(df) <-
+    paste0(deparse(substitute(x)), "_l", lag, "d", differences
+    )[1:min(length(lag), length(differences))]
+
+  # return the data.frame
+  return(df)
 }

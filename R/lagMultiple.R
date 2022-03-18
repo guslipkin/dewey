@@ -18,8 +18,6 @@
 #' lagMultiple(x, 1:5)
 lagMultiple <- function(x, k = 1) {
 
-  # return true if the number is not an integer
-  # isNotInteger <- function(x) { (!is.numeric(x) | (x != as.integer(x))) }
   # stop if not all values of k are integers
   if (any(sapply(k, isNotInteger))) {
     stop("k must be an integer or integer vector")
