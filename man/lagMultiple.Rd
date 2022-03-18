@@ -2,7 +2,7 @@
 % Please edit documentation in R/lagMultiple.R
 \name{lagMultiple}
 \alias{lagMultiple}
-\title{An extension on `diff` from base R}
+\title{Compute a lagged version of the input data with multiple lags at once}
 \usage{
 lagMultiple(x, k = 1)
 }
@@ -19,11 +19,11 @@ Returns a data.frame of the lagged variable. The number of rows is
   variable and includes the number of lags used for that column.
 }
 \description{
-An extension on `diff` from base R
+Compute a lagged version of the input data with multiple lags at once
 }
 \examples{
 # Creating dummy data
-x <- rnorm(100)
+x <- rnorm(10)
 # for lags 1-5
 lagMultiple(x, 1:5)
 }

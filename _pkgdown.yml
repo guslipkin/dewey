@@ -2,3 +2,6 @@ url: ~
 template:
   bootstrap: 5
 
+authors:
+  Gus Lipkin:
+    href: "https://guslipkin.github.io"

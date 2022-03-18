@@ -2,7 +2,7 @@
 % Please edit documentation in R/diffFill.R
 \name{diffFill}
 \alias{diffFill}
-\title{An extension on `diff` from base R}
+\title{An extension on `diff` from base R that fills blank space with NA}
 \usage{
 diffFill(x, lag = 1, differences = 1, ...)
 }
@@ -21,11 +21,11 @@ Returns a vector of the same length as the input, otherwise behaves
   the same as \code{\link[base]{diff}}
 }
 \description{
-An extension on `diff` from base R
+An extension on `diff` from base R that fills blank space with NA
 }
 \examples{
 # Creating dummy data
-x <- rnorm(100)
+x <- rnorm(10)
 # for 1 lag and 2 differences
 diffFill(x, 1, 2)
 }

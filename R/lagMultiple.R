@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' # Creating dummy data
-#' x <- rnorm(100)
+#' x <- rnorm(10)
 #' # for lags 1-5
 #' lagMultiple(x, 1:5)
 lagMultiple <- function(x, k = 1) {

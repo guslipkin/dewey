@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' # Creating dummy data
-#' x <- rnorm(100)
+#' x <- rnorm(10)
 #' # for 1 lag and 2 differences
 #' diffFill(x, 1, 2)
 diffFill <- function(x, lag = 1, differences = 1, ...) {
