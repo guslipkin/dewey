@@ -1,4 +1,4 @@
-#' An extension on `diff` from base R
+#' An extension on `diff` from base R that fills blank space with NA
 #'
 #' @export
 #'

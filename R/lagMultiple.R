@@ -1,4 +1,4 @@
-#' An extension on `diff` from base R
+#' Compute a lagged version of the input data with multiple lags at once
 #'
 #' @export
 #'
