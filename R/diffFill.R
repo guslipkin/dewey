@@ -17,6 +17,17 @@
 #' # for 1 lag and 2 differences
 #' diffFill(x, 1, 2)
 diffFill <- function(x, lag = 1, differences = 1, ...) {
+
+  # return true if the number is not an integer
+  # isNotInteger <- function(x) { (!is.numeric(x) | (x != as.integer(x))) }
+  # stop if not all values of lag or differences are integers
+  if (any(sapply(lag, isNotInteger))) {
+    stop("lag must be an integer or integer vector")
+  }
+  if (any(sapply(differences, isNotInteger))) {
+    stop("differences must be an integer or integer vector")
+  }
+
   # append the appropriate number of NA values to the diff
   return(c(rep(NA, lag * differences), diff(x, lag, differences, ...)))
 }

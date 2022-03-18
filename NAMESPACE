@@ -2,6 +2,7 @@
 
 export(diffFill)
 export(ifelsedata)
+export(lagMultiple)
 export(regsearch)
 import(data.table)
 import(parallel)
