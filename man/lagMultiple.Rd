@@ -7,7 +7,8 @@
 lagMultiple(x, k = 1)
 }
 \arguments{
-\item{x}{A vector, single column matrix, or univariate time series}
+\item{x}{A vector, single column matrix, or univariate time series. Can also
+be a multi-column matrix if `k` is length 1.}
 
 \item{k}{(Optional) An integer vector containing a number of lags. Defaults
 to 1}
@@ -16,7 +17,9 @@ to 1}
 Returns a data.frame of the lagged variable. The number of rows is
   the same as the length of the input vector. The number of columns is the
   number of lags to be used. Each column retains the name of the original
-  variable and includes the number of lags used for that column.
+  variable and includes the number of lags used for that column. If `x` is a
+  multi-column matrix, returns a matrix of the same number of columns with no
+  names.
 }
 \description{
 Compute a lagged version of the input data with multiple lags at once
@@ -26,4 +29,7 @@ Compute a lagged version of the input data with multiple lags at once
 x <- rnorm(10)
 # for lags 1-5
 lagMultiple(x, 1:5)
+
+# 1 lag with a matrix of dummy data
+lagMultiple(matrix(1:100, 10, 10), 1)
 }

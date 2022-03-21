@@ -7,18 +7,21 @@
 diffFill(x, lag = 1, differences = 1, ...)
 }
 \arguments{
-\item{x}{a numeric vector or matrix containing the values to be differenced}
+\item{x}{a numeric vector OR matrix containing the values to be differenced}
 
-\item{lag}{(Optional) an integer indicating which lag to use. Defaults to 1}
+\item{lag}{(Optional) an integer indicating which lag to use. If `x` is a
+vector, `lag` can also be a vector. Defaults to 1}
 
 \item{differences}{(Optional) an integer indicating the order of the
-difference. Defaults to 1}
+difference. If `x` is a vector, `differences` can also be a vector.
+Defaults to 1}
 
 \item{...}{(Optional) further arguments to be passed to or from methods}
 }
 \value{
 Returns a vector of the same length as the input, otherwise behaves
-  the same as \code{\link[base]{diff}}
+  the same as \code{\link[base]{diff}}. If the input is a matrix, it returns
+  a matrix.
 }
 \description{
 An extension on `diff` from base R that fills blank space with NA
