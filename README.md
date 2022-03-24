@@ -1,4 +1,4 @@
-# dewey
+# dewey <img src="man/figures/logo.svg" align="right" height="139" />
 An R library for a variety of things
 
 
