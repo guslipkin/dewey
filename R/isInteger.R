@@ -25,9 +25,8 @@ isInteger <- function(x) {
       warning("Character input accepted, attempting to coerce to numeric")
       x <- as.numeric(x)
       # if there are any errors, stop the function
-      if (any(is.na(x))) {
+      if (any(is.na(x)))
         stop("Unable to coerce input to numeric")
-      }
     }
     # return true if x is an integer or integer vector
     return(round(x, 0) == x)

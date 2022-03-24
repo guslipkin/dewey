@@ -102,10 +102,16 @@ regsearch <- function(data,
   if(multi) { clust <- makeCluster(detectCores()) }
 
   # Get every combination of the independent variables
+  if(dependent %in% independent) {
+    warning("Dropping dependent variable from independent variables")
+    independent <- independent[independent != dependent]
+  }
+  factorVars <- sapply(data, is.factor)
   # append underscores to factor variables so that when the regression is run,
   #   they will show as `factor_1`, `factor_2`, and so on
-  varNames <-
-    ifelse(sapply(data, is.factor), paste0(names(data), "_"), names(data))
+  varNames <- ifelse(independent %in% sapply(data, is.factor),
+                     paste0(independent, "_"),
+                     independent)
   # create and sort the list of independent variables
   if(interactions) {
     independent <- sort(independent)
@@ -125,9 +131,7 @@ regsearch <- function(data,
                               recursive = FALSE),
                        independent)
     }
-  } else {
-    independent <- sort(independent)
-  }
+  } else { independent <- sort(independent) }
 
   # create the formulas that will be used for the regressions
   # when an interaction term is encountered, any superfluous terms are dropped
@@ -158,10 +162,8 @@ regsearch <- function(data,
   if (multi) {
     clusterExport(clust, c("combs"), envir = environment())
     forms <-
-      pblapply(cl = clust, combs, createRegressions, dependent = dependent)
-  } else {
-    forms <- pblapply(combs, createRegressions, dependent = dependent)
-  }
+      pblapply(cl = clust, combs, createRegression, dependent = dependent)
+  } else { forms <- pblapply(combs, createRegression, dependent = dependent) }
   forms <- unlist(forms)
   print(paste("Running", length(forms), "regressions. Please be patient, this may take a while."))
 
@@ -232,16 +234,13 @@ dropDuplicates <- function(x) {
   x <- x[!is.na(x)]
   expanded <- paste0(unlist(strsplit(x[grepl("\\*", x)], "\\*")), "")
   notExpanded <- paste0(x[!grepl("\\*", x)], "")
-  if (sum(notExpanded %in% expanded) == 0)
-    return(x)
-  else
-    return(NULL)
+  if (sum(notExpanded %in% expanded) == 0) { return(x) }
+  else { return(NULL) }
 }
 
 # pastes variables into a usable format for regressions
-createRegressions <- function(x, dependent) {
-  if (is.null(x))
-    return(NULL)
+createRegression <- function(x, dependent) {
+  if (is.null(x)) { return(NULL) }
   return(paste(paste(dependent, "~"),
                paste("+", x[!is.na(x)], collapse = " "),
                collapse = " "))

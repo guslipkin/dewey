@@ -9,3 +9,11 @@ test_that("lags are integers or integer vectors", {
   expect_error(lagMultiple(1:10, 1.1),
                "k must be an integer or integer vector")
 })
+
+test_that("output name is overridden with the 'name' argument", {
+  expect_equal(names(lagMultiple(1:10, 1, "var")), "var_l1")
+})
+
+test_that("returns a data.frame", {
+  expect_s3_class(lagMultiple(1:10, 1, "var"), "data.frame")
+})

@@ -7,16 +7,20 @@
 ifelsedata(x, y, arg = NULL, matchCols = FALSE)
 }
 \arguments{
-\item{x}{A `data.frame` of the same dimensions as `y`.}
+\item{x}{A `data.frame` or `matrix`}
 
-\item{y}{A `data.frame` of the same dimensions as `x` or a vector of length
-one.}
+\item{y}{A `data.frame` or `matrix` of the same dimensions as `x` or a vector
+with a length matching the rows of `x` or a length 1. If `y` is a
+`data.frame` or `matrix` with dimensions different than `x`, the larger
+will be trimmed to match the dimensions of the smaller.}
 
 \item{arg}{(Optional) A logical test expression including `x` and `y`. If
 `arg` is not included, it is assumed that all values of `y` are logical.}
 
 \item{matchCols}{(Optional) A boolean that determines if columns will be
-matched based on name or position. Default is `FALSE`}
+matched based on name or position. Columns will be returned in the order
+they are in in `x`. Columns not present in `x` will not be returned.
+Defaults to `FALSE`.}
 }
 \value{
 Returns a data.frame of the smallest size by rows and columns. The

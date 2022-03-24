@@ -4,7 +4,7 @@
 \alias{diffFill}
 \title{An extension on `diff` from base R that fills blank space with NA}
 \usage{
-diffFill(x, lag = 1, differences = 1, ...)
+diffFill(x, lag = 1, differences = 1, name = NULL, ...)
 }
 \arguments{
 \item{x}{a numeric vector OR matrix containing the values to be differenced}
@@ -15,6 +15,10 @@ vector, `lag` can also be a vector. Defaults to 1}
 \item{differences}{(Optional) an integer indicating the order of the
 difference. If `x` is a vector, `differences` can also be a vector.
 Defaults to 1}
+
+\item{name}{(Optional) A name to be used in the lagged data.frame. Defaults
+to the name of the variable passed to `x`. If that is not possible, `name`
+will default to "X".}
 
 \item{...}{(Optional) further arguments to be passed to or from methods}
 }

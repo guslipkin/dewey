@@ -8,6 +8,9 @@
 #' @param differences (Optional) an integer indicating the order of the
 #'   difference. If `x` is a vector, `differences` can also be a vector.
 #'   Defaults to 1
+#' @param name (Optional) A name to be used in the lagged data.frame. Defaults
+#'   to the name of the variable passed to `x`. If that is not possible, `name`
+#'   will default to "X".
 #' @param ... (Optional) further arguments to be passed to or from methods
 #'
 #' @return  Returns a vector of the same length as the input, otherwise behaves
@@ -19,20 +22,17 @@
 #' x <- rnorm(10)
 #' # for 1 lag and 2 differences
 #' diffFill(x, 1, 2)
-diffFill <- function(x, lag = 1, differences = 1, ...) {
+diffFill <- function(x, lag = 1, differences = 1, name = NULL, ...) {
 
   # if x is a matrix, lag and differences must be length 1
-  if(is.matrix(x) & (length(lag) > 1 | length(differences) > 1)) {
+  if(is.matrix(x) & (length(lag) > 1 | length(differences) > 1))
     stop("if `x` is a matrix, `lag` and `differences` must be length 1")
-  }
 
   # stop if not all values of lag or differences are integers
-  if (!all(isInteger(lag)) | any(lag < 1)) {
+  if (!all(isInteger(lag)) | any(lag < 1))
     stop("lag must be an integer or integer vector and >= 1")
-  }
-  if (!all(isInteger(differences)) | any(differences < 1)) {
+  if (!all(isInteger(differences)) | any(differences < 1))
     stop("differences must be an integer or integer vector and >= 1")
-  }
 
   # make sure the lag and differences are the same length
   if(length(lag) != length(differences)) {
@@ -56,7 +56,7 @@ diffFill <- function(x, lag = 1, differences = 1, ...) {
     df <- apply(x, 2, function(y) {
       c(rep(NA, lag * differences),
         diff(y, lag, differences, ...))
-    })
+      })
 
   } else {
     # append the appropriate number of NA values to the diff and build into a
@@ -68,9 +68,10 @@ diffFill <- function(x, lag = 1, differences = 1, ...) {
 
     # get the variable name and rename the columns with the correct lag and
     # difference number
+    name <- getVariableName(x, name)
     colnames(df) <-
-      paste0(deparse(substitute(x)), "_l", lag, "d", differences
-      )[1:min(length(lag), length(differences))]
+      paste0(name, "_l", lag, "d", differences)[1:min(length(lag),
+                                                      length(differences))]
   }
 
   # return the data.frame

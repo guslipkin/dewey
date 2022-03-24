@@ -6,6 +6,9 @@
 #'   be a multi-column matrix if `k` is length 1.
 #' @param k (Optional) An integer vector containing a number of lags. Defaults
 #'   to 1
+#' @param name (Optional) A name to be used in the lagged data.frame. Defaults
+#'   to the name of the variable passed to `x`. If that is not possible, `name`
+#'   will default to "X".
 #'
 #' @return Returns a data.frame of the lagged variable. The number of rows is
 #'   the same as the length of the input vector. The number of columns is the
@@ -22,17 +25,15 @@
 #'
 #' # 1 lag with a matrix of dummy data
 #' lagMultiple(matrix(1:100, 10, 10), 1)
-lagMultiple <- function(x, k = 1) {
+lagMultiple <- function(x, k = 1, name = NULL) {
 
   # if x is a matrix, lag  must be length 1
-  if(is.matrix(x) & length(k) > 1) {
+  if(is.matrix(x) & length(k) > 1)
     stop("if `x` is a matrix, `k` must be length 1")
-  }
 
   # stop if not all values of k are integers
-  if (!all(isInteger(k))) {
+  if (!all(isInteger(k)))
     stop("k must be an integer or integer vector")
-  }
 
   if (is.matrix(x)) {
     # create a matrix of lagged values
@@ -49,7 +50,8 @@ lagMultiple <- function(x, k = 1) {
     }))
 
     # get the variable name and rename the columns with the correct lag number
-    colnames(df) <- paste0(deparse(substitute(x)), "_lag", k)
+    name <- getVariableName(x, name)
+    colnames(df) <- paste0(name, "_l", ifelse(k < 0, paste0("m", abs(k)), k))
   }
 
   # return the data.frame

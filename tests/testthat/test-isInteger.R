@@ -13,6 +13,15 @@ test_that("character numbers are handled appropriately", {
 })
 
 test_that("unacceptable input is handled appropriately", {
-  expect_error(isInteger("e"), "Unable to coerce input to numeric")
+  expect_error(
+    expect_warning(
+      expect_warning(
+        isInteger("e"),
+        "Character input accepted, attempting to coerce to numeric"
+      ),
+      "NAs introduced by coercion"
+    ),
+    "Unable to coerce input to numeric"
+  )
   expect_error(isInteger(TRUE), "`isInteger` only accepts numeric input")
 })

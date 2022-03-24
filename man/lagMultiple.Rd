@@ -4,7 +4,7 @@
 \alias{lagMultiple}
 \title{Compute a lagged version of the input data with multiple lags at once}
 \usage{
-lagMultiple(x, k = 1)
+lagMultiple(x, k = 1, name = NULL)
 }
 \arguments{
 \item{x}{A vector, single column matrix, or univariate time series. Can also
@@ -12,6 +12,10 @@ be a multi-column matrix if `k` is length 1.}
 
 \item{k}{(Optional) An integer vector containing a number of lags. Defaults
 to 1}
+
+\item{name}{(Optional) A name to be used in the lagged data.frame. Defaults
+to the name of the variable passed to `x`. If that is not possible, `name`
+will default to "X".}
 }
 \value{
 Returns a data.frame of the lagged variable. The number of rows is
