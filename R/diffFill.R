@@ -19,9 +19,8 @@
 #'
 #' @examples
 #' # Creating dummy data
-#' x <- rnorm(10)
 #' # for 1 lag and 2 differences
-#' diffFill(x, 1, 2)
+#' diffFill(rnorm(10), 1, 2)
 diffFill <- function(x, lag = 1, differences = 1, name = NULL, ...) {
 
   # if x is a matrix, lag and differences must be length 1
