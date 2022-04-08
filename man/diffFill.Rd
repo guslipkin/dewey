@@ -32,7 +32,6 @@ An extension on `diff` from base R that fills blank space with NA
 }
 \examples{
 # Creating dummy data
-x <- rnorm(10)
 # for 1 lag and 2 differences
-diffFill(x, 1, 2)
+diffFill(rnorm(10), 1, 2)
 }
