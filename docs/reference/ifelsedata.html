@@ -88,32 +88,32 @@ Defaults to `FALSE`.</p></dd>
 <span class="r-in"><span><span class="co"># test for equality</span></span></span>
 <span class="r-in"><span><span class="fu">ifelsedata</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="st">"x &gt;= y | x == y - 2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    X1 X2 X3 X4 X5 X6 X7 X8 X9 X10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  10 10 NA  3  7 NA NA  5  7  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  NA 10  9 NA  8 NA NA 10 NA  10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   9 NA NA  9  8  2 NA 10  9   8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   8  2  6 NA  3 10 NA  6 NA   7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   2  9 NA  6 NA NA NA  6  4   8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   8  6  2  4  8 10  6 NA  7   4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   7  9  9 NA NA  5 NA  8  2  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  NA NA  6 NA  5 NA NA NA NA   7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  NA NA NA  9  7  2 NA  8  3   5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  1  5  2 NA  3  9  8  8 NA   7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  10  8  5 NA 10  5 NA NA NA  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   9  9  6  6  3  9 NA NA NA   6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   7 NA NA NA  3  5 NA  5  9  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   6 10  6 NA  7  1 NA  3  6   8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  NA  3 NA NA  9  4  5  6 10   6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  NA NA  6 NA  7  7  6  4  4   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  NA 10  5 NA  8 10 NA  2 10  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  NA NA NA  3 NA  5 NA NA  6  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   9  7 NA  9  6  9  7  7  3   4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  8  8 NA NA  6  6 NA  6 NA  NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rename x columns</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="fl">5</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># match with column names</span></span></span>
 <span class="r-in"><span><span class="fu">ifelsedata</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="st">"x &gt;= y | x == y - 2"</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    X5 X6 X7 X8 X9 X10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  10 10 NA NA  7  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  NA 10  9 NA  8  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   9  5 NA  9  8  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   8 NA NA  4 NA  10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  NA  9 NA  6  4  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   8  6  2  4  8  10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  NA  9 NA NA  3  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   4 NA NA NA  5  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   6  2 NA  9  7   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 NA  5  2 NA  3   9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  10  8 NA NA 10   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   9  9 NA NA  3   9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   7  5 NA  4  3   5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   6 10 NA  3  7  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   4 NA  5  7  9   4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   5  3  6  7  7   7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  NA 10  5  2  8  10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  NA NA NA NA  9  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   9  7 NA  9  6   9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  8  8 NA  6  6  NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># match based on booleans in y</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">100</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
@@ -122,16 +122,16 @@ Defaults to `FALSE`.</p></dd>
 <span class="r-in"><span><span class="co"># test based on TRUE/FALSE in y</span></span></span>
 <span class="r-in"><span><span class="fu">ifelsedata</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    X1 X2 X3 X4 X5 X6 X7 X8 X9 X10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  10 NA NA NA  7  2  4 NA  7   4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   3 10 NA  1  8 NA NA NA  1  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   9  5  1 NA  8 NA  3 NA  9  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   8  2 NA NA NA 10  1 NA  3   7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   2  9  2 NA NA NA NA NA  4   8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   8 NA NA NA  8 NA NA NA NA  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  NA NA  9 NA  3  5  6 NA  2  NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  NA  1  6  2  5 NA  5  3  2   7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   6 NA NA  9  7  2 NA NA NA   5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  1 NA NA  1  3 NA  8  8  4  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  NA NA  5 NA NA NA NA NA NA   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   9  9  6 NA  3 NA NA NA NA   6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  NA  5 NA  4 NA NA  5 NA NA   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  NA 10  6 NA NA  1 NA  3  6  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   4 NA  5  7 NA  4 NA NA 10   6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  NA  3  6  7  7  7 NA  4 NA   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  NA NA  5 NA NA NA NA  2 10  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   2  1  1  3 NA  5 NA  8  6  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   9  7  2  9  6  9  7 NA  3  NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  8  8  2 NA  6 NA  1  6  1  NA</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

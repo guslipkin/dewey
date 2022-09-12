@@ -81,17 +81,17 @@ will default to "X".</p></dd>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># for lags 1-5</span></span></span>
 <span class="r-in"><span><span class="fu">lagMultiple</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          x_l1       x_l2       x_l3       x_l4       x_l5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -1.9108293  1.2904017 -0.6440849 -0.4822443  0.4069840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1.2904017 -0.6440849 -0.4822443  0.4069840 -0.8880513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  -0.6440849 -0.4822443  0.4069840 -0.8880513  1.3736180</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  -0.4822443  0.4069840 -0.8880513  1.3736180 -1.3508290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.4069840 -0.8880513  1.3736180 -1.3508290 -0.2223385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -0.8880513  1.3736180 -1.3508290 -0.2223385         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   1.3736180 -1.3508290 -0.2223385         NA         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  -1.3508290 -0.2223385         NA         NA         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  -0.2223385         NA         NA         NA         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         NA         NA         NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           x_l1        x_l2        x_l3        x_l4        x_l5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0.86350640 -0.18405638  0.17291624 -1.65131075 -0.42342725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -0.18405638  0.17291624 -1.65131075 -0.42342725 -1.21789569</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0.17291624 -1.65131075 -0.42342725 -1.21789569 -0.59766731</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  -1.65131075 -0.42342725 -1.21789569 -0.59766731 -1.12143047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  -0.42342725 -1.21789569 -0.59766731 -1.12143047 -0.03696706</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -1.21789569 -0.59766731 -1.12143047 -0.03696706          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  -0.59766731 -1.12143047 -0.03696706          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  -1.12143047 -0.03696706          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  -0.03696706          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10          NA          NA          NA          NA          NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 1 lag with a matrix of dummy data</span></span></span>
 <span class="r-in"><span><span class="fu">lagMultiple</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span></span>
