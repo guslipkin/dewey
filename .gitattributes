@@ -1,2 +1,14 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+docs/** linguist-generated -linguist-detectable
+
+*.qmd linguist-language=RMarkdown linguist-detectable=true
+*.rmd linguist-language=RMarkdown linguist-detectable=true
+*.Rmd linguist-language=RMarkdown linguist-detectable=true
+
+*.html linguist-vendored
+*.css  linguist-vendored
+*.json  linguist-vendored
+*.js  linguist-vendored
+*.sh  linguist-vendored
