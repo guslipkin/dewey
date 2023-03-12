@@ -1,7 +1,8 @@
 url: ~
 template:
   bootstrap: 5
+  bootswatch: flatly
 
 authors:
   Gus Lipkin:
-    href: "https://guslipkin.github.io"
+    href: "https://guslipkin.me"
